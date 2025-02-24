@@ -88,7 +88,7 @@ def _LumpyPrev(extend_selection, paragraph):
         else:
             N10X.Editor.SetCursorPos((target_x, target_y), cursor_index)
         if cursor_index == 0:
-          N10X.Editor.SetScrollLine(min(scroll_line, target_y))
+            N10X.Editor.SetScrollLine(min(scroll_line, target_y))
 
 def _LumpyNext(extend_selection, paragraph):
     scroll_line = N10X.Editor.GetScrollLine()

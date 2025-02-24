@@ -8,6 +8,7 @@
 #   LumpySelectToNextWord
 #   LumpySelectToPreviousParagraph
 #   LumpySelectToNextParagraph
+#------------------------------------------------------------------------
 import N10X
 
 def _LumpyIsIdentCharacter(c):
@@ -86,8 +87,8 @@ def _LumpyPrev(extend_selection, paragraph):
             _LumpyUpdateSelection(cursor_index, target_x, target_y, False)
         else:
             N10X.Editor.SetCursorPos((target_x, target_y), cursor_index)
-        scroll_line = min(scroll_line, target_y)
-    N10X.Editor.SetScrollLine(scroll_line)
+        if cursor_index == 0:
+          N10X.Editor.SetScrollLine(min(scroll_line, target_y))
 
 def _LumpyNext(extend_selection, paragraph):
     scroll_line = N10X.Editor.GetScrollLine()
@@ -98,8 +99,8 @@ def _LumpyNext(extend_selection, paragraph):
             _LumpyUpdateSelection(cursor_index, target_x, target_y, True)
         else:
             N10X.Editor.SetCursorPos((target_x, target_y), cursor_index)
-        scroll_line = max(scroll_line, target_y - visible_line_count + 2)
-    N10X.Editor.SetScrollLine(scroll_line)
+        if cursor_index == 0:
+            N10X.Editor.SetScrollLine(max(scroll_line, target_y - visible_line_count + 2))
 
 def LumpyMoveToPreviousParagraph():
     _LumpyPrev(False, True)

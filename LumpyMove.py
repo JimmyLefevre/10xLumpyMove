@@ -8,6 +8,7 @@
 #   LumpySelectToNextWord
 #   LumpySelectToPreviousParagraph
 #   LumpySelectToNextParagraph
+#   LumpyDeleteWord
 #------------------------------------------------------------------------
 import N10X
 
@@ -39,6 +40,7 @@ def _LumpyUpdateSelection(cursor_index, new_x, new_y, forward):
     sel_p0, sel_p1 = N10X.Editor.GetCursorSelection(cursor_index)
     if not forward:
         sel_p0, sel_p1 = sel_p1, sel_p0
+    N10X.Editor.SetCursorPos((new_x, new_y), cursor_index) # Scroll the camera
     if (orig_x == sel_p0[0] and orig_y == sel_p0[1]):
         N10X.Editor.SetSelection(sel_p1, (new_x, new_y), cursor_index)
     else:
@@ -47,6 +49,7 @@ def _LumpyUpdateSelection(cursor_index, new_x, new_y, forward):
 def _LumpyPrevWordXY(cursor_index):
     x, y = N10X.Editor.GetCursorPos(cursor_index)
     line = N10X.Editor.GetLine(y)
+    x = min(x, len(line) - 1)
     while x > 0 and not _LumpyIsIdentCharacter(line[x-1]):
         x -= 1
     if x == 0:
@@ -67,7 +70,7 @@ def _LumpyNextWordXY(cursor_index):
     len_line = len(line)
     while x < len_line and _LumpyIsNewlineCharacter(line[x]):
         x += 1
-    if x == len_line and (y + 1) < N10X.Editor.GetLineCount():
+    if x >= len_line and (y + 1) < N10X.Editor.GetLineCount():
         y += 1
         x = 0
     else:
@@ -75,6 +78,7 @@ def _LumpyNextWordXY(cursor_index):
             x += 1
         while x < len_line and not _LumpyIsIdentCharacter(line[x]):
             x += 1
+        x = min(x, len(line) - 1)
         while x > 0 and _LumpyIsNewlineCharacter(line[x-1]):
             x -= 1
     return x, y
@@ -88,7 +92,7 @@ def _LumpyPrev(extend_selection, paragraph):
         else:
             N10X.Editor.SetCursorPos((target_x, target_y), cursor_index)
         if cursor_index == 0:
-            N10X.Editor.SetScrollLine(min(scroll_line, target_y))
+          N10X.Editor.SetScrollLine(min(scroll_line, target_y))
 
 def _LumpyNext(extend_selection, paragraph):
     scroll_line = N10X.Editor.GetScrollLine()
@@ -101,6 +105,14 @@ def _LumpyNext(extend_selection, paragraph):
             N10X.Editor.SetCursorPos((target_x, target_y), cursor_index)
         if cursor_index == 0:
             N10X.Editor.SetScrollLine(max(scroll_line, target_y - visible_line_count + 2))
+
+def LumpyDeleteWord():
+    sel_p0, sel_p1 = N10X.Editor.GetCursorSelection(0)
+    if sel_p0[0] != sel_p1[0] or sel_p0[1] != sel_p1[1]:
+        N10X.Editor.ExecuteCommand("Delete")
+    else:
+        _LumpyPrev(True, False)
+        N10X.Editor.ExecuteCommand("Delete")
 
 def LumpyMoveToPreviousParagraph():
     _LumpyPrev(False, True)

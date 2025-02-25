@@ -24,4 +24,4 @@ Movement by paragraph is similar to Vim `{` `}`, or to the following VSCode comm
     }
   }
   ```
-Importantly, it will skip over multiple blank lines.
+Importantly, it will skip over multiple blank lines in a row.

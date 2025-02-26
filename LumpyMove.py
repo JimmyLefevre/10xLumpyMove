@@ -8,7 +8,8 @@
 #   LumpySelectToNextWord
 #   LumpySelectToPreviousParagraph
 #   LumpySelectToNextParagraph
-#   LumpyDeleteWord
+#   LumpyDeletePreviousWord
+#   LumpyDeleteNextWord
 #------------------------------------------------------------------------
 import N10X
 
@@ -106,13 +107,25 @@ def _LumpyNext(extend_selection, paragraph):
         if cursor_index == 0:
             N10X.Editor.SetScrollLine(max(scroll_line, target_y - visible_line_count + 2))
 
-def LumpyDeleteWord():
+def LumpyDeletePreviousWord():
+    N10X.Editor.PushUndoGroup()
     sel_p0, sel_p1 = N10X.Editor.GetCursorSelection(0)
     if sel_p0[0] != sel_p1[0] or sel_p0[1] != sel_p1[1]:
         N10X.Editor.ExecuteCommand("Delete")
     else:
         _LumpyPrev(True, False)
         N10X.Editor.ExecuteCommand("Delete")
+    N10X.Editor.PopUndoGroup()
+
+def LumpyDeleteNextWord():
+    N10X.Editor.PushUndoGroup()
+    sel_p0, sel_p1 = N10X.Editor.GetCursorSelection(0)
+    if sel_p0[0] != sel_p1[0] or sel_p0[1] != sel_p1[1]:
+        N10X.Editor.ExecuteCommand("Delete")
+    else:
+        _LumpyNext(True, False)
+        N10X.Editor.ExecuteCommand("Delete")
+    N10X.Editor.PopUndoGroup()
 
 def LumpyMoveToPreviousParagraph():
     _LumpyPrev(False, True)

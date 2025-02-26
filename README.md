@@ -1,13 +1,13 @@
 # 10xLumpyMove
 Lumpier cursor movement for the 10x editor
 
-This exports 9 commands you can use:
+This exports the following commands:
 ##### `LumpyMoveToPreviousWord`, `LumpyMoveToNextWord`, `LumpySelectToPreviousWord`, `LumpySelectToNextWord`
 
 ![20250224_031343](https://github.com/user-attachments/assets/b375b4fc-fe98-46e1-9cfe-e8579884e528)
 
 Movement by word is Delphi-like. It will jump to the start of the previous/next word (ie. string of letters/digits/underscores), with one additional stop at line breaks.
-`LumpyDeleteWord` uses the same logic.
+`LumpyDeletePreviousWord` and `LumpyDeleteNextWord` use the same logic to determine what to delete.
 
 ##### `LumpyMoveToPreviousParagraph`, `LumpyMoveToNextParagraph`, `LumpySelectToPreviousParagraph`, `LumpySelectToNextParagraph`
 
